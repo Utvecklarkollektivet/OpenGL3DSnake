@@ -42,6 +42,8 @@ public:
 
 	void render(Scene *scene, Camera *camera);
 
+	void onResizeScreen();
+
 };
 
 #endif

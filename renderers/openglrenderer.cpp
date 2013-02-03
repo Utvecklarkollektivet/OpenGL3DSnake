@@ -33,7 +33,10 @@ OpenGLRenderer::OpenGLRenderer() {
 }
 
 OpenGLRenderer::~OpenGLRenderer() {
-
+	// Free memory
+	for (auto it = this->meshes.begin(); it != this->meshes.end(); it++) {
+		delete it->second;
+	}
 }
 
 int OpenGLRenderer::addMesh(GLfloatCollection *vertices, GLfloatCollection *normals, GLfloatCollection *indices) {
@@ -135,10 +138,17 @@ void OpenGLRenderer::render(Scene *scene, Camera *camera) {
 		    //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0L);
 		    
 		} else {
+			// TODO: Handle this error, caused when the ID wasn't found
 			std::cout << "THIS IS BAD!" << std::endl;
 		}
 		
 	}
 	
 	glutSwapBuffers();
+}
+
+void OpenGLRenderer::onResizeScreen() {
+	glm::mat4 projMatrix = glm::perspective(45.0f, (GLfloat)glutGet(GLUT_WINDOW_WIDTH) / glutGet(GLUT_WINDOW_HEIGHT), 0.1f, 100.f);
+
+	glUniformMatrix4fv(glGetUniformLocation(program, "projMatrix"), 1, GL_FALSE, glm::value_ptr(projMatrix));
 }

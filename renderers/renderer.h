@@ -16,6 +16,8 @@ private:
 public:
 	//Renderer();
 	virtual ~Renderer() = 0;
+
+	virtual void onResizeScreen() = 0;
 	
 	virtual int addMesh(GLfloatCollection *vertices, GLfloatCollection *normals, GLfloatCollection *indices) = 0;
 	virtual int addMesh(SceneObject* so) = 0;
