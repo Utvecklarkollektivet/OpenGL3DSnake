@@ -2,7 +2,7 @@
 #g++ -Wall -std=c99 -o main -lm -lX11 -lGL -lGLU -lglut -DGL_GLEXT_PROTOTYPES main.cpp
 
 BUILD_PATH = build/
-OBJS = main.cpp openglrenderer.cpp GL_utilities.c
+OBJS = main.cpp renderers/renderer.cpp renderers/openglrenderer.cpp lib/GL_utilities.c
 OBJ_NAME = 3dgame
 
 all : $(OBJS)

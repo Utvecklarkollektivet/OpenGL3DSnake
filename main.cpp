@@ -4,21 +4,26 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include "lib/glm/glm/glm.hpp"
-#include "openglrenderer.h"
+#include "renderers/renderer.h"
+#include "scene/Scene.h"
+#include "renderers/openglrenderer.h"
 
 using namespace std;
 
-OpenGLRenderer renderer;
+/*
+ Om det inte går att ladda in shaders och sådant:
+ http://stackoverflow.com/questions/859501/learning-opengl-in-ubuntu
+*/
+
+Renderer *renderer = 0;
 
 void init() {
-	//renderer = new OpenGLRenderer();
+	renderer = new OpenGLRenderer();
 
 
 }
 int main(int argc, char *argv[])
 {
-
-
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH);
 	glutInitWindowSize(400, 400);
