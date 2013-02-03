@@ -1,24 +1,40 @@
 #ifndef SCENEOBJECT_H
 #define SCENEOBJECT_H
 
+#include <iostream>
+#include <vector>
 #include <GL/gl.h>
 #include "../lib/glm/glm/glm.hpp"
+#include "../lib/glm/glm/gtc/matrix_transform.hpp"
 
 class SceneObject {
-private:
-	GLfloat vertices;
-	GLfloat normals;
-	GLfloat texCoords;
+protected:
+
 	
-	GLint scaleX;
-	GLint scaleY;
-	GLint scaleZ;
+	GLfloat scaleX;
+	GLfloat scaleY;
+	GLfloat scaleZ;
+
+	GLfloat rotX;
+	GLfloat rotY;
+	GLfloat rotZ;
 
 	glm::vec3 pos;
-
 public:
+	std::vector<GLfloat> vertices;
+	std::vector<GLfloat> normals;
+	std::vector<GLfloat> indices;
+	/*
+	GLfloat vertices[];
+	GLfloat normals[];
+	GLfloat texCoords[];
+	GLfloat indices[];
+	*/
+	SceneObject();
+	SceneObject(std::vector<GLfloat> vertices, 
+		std::vector<GLfloat> normals, std::vector<GLfloat> indices);
 
-	void move(GLint x, GLint y, GLint z);
+	void move(GLfloat x, GLfloat y, GLfloat z);
 	void move(glm::vec3 v);
 
 	void setX(GLfloat x);
@@ -27,9 +43,9 @@ public:
 
 	void setPos(glm::vec3 p);
 
-	GLint getX();
-	GLint getY();
-	GLint getZ();
+	GLfloat getX();
+	GLfloat getY();
+	GLfloat getZ();
 	glm::vec3 getPos();
 
 	// Calculates and returns the world matrix for the model

@@ -3,9 +3,11 @@
 #include <GL/freeglut.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
+#include <math.h>
 #include "lib/glm/glm/glm.hpp"
 #include "renderers/renderer.h"
 #include "scene/Scene.h"
+#include "scene/objects/cube.h"
 #include "renderers/openglrenderer.h"
 
 using namespace std;
@@ -16,10 +18,32 @@ using namespace std;
 */
 
 Renderer *renderer = 0;
+Scene *scene = 0;
+Camera *camera = 0;
+Cube *cube = 0;
 
 void init() {
 	renderer = new OpenGLRenderer();
+	scene = new Scene(renderer);
+	camera = new Camera();
+	camera->move(0, 0, 3);
+	cube = new Cube();
+	scene->addObject(cube);
+}
 
+void display() {
+	GLfloat t = (GLfloat)glutGet(GLUT_ELAPSED_TIME);
+	t = t/1000;
+	//cout << "display!" << endl;
+	cube->setX( sin(t) );
+
+	renderer->render(scene, camera);
+}
+
+void OnTimer(int value)
+{
+	glutPostRedisplay();
+	glutTimerFunc(20, &OnTimer, value);
 
 }
 int main(int argc, char *argv[])
@@ -29,14 +53,14 @@ int main(int argc, char *argv[])
 	glutInitWindowSize(400, 400);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
 	glutCreateWindow ("3Dgame");
-	//init ();
-	//glutDisplayFunc(display); 
+	init ();
+	glutDisplayFunc(display); 
 	//glutSetCursor(GLUT_CURSOR_NONE); 
 	//glutKeyboardFunc(onKeyPressed); 
 	//glutKeyboardUpFunc(onKeyUp); 
 	//glutMouseFunc(onMouse);
 	//glutPassiveMotionFunc(onMouseMove);
 	
-	//glutTimerFunc(20, &OnTimer, 0);
+	glutTimerFunc(20, &OnTimer, 0);
 	glutMainLoop();
 }

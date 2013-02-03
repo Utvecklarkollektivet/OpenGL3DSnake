@@ -4,16 +4,20 @@
 #include <GL/gl.h>
 
 #include "../lib/glm/glm/glm.hpp"
+#include "../lib/glm/glm/gtc/matrix_transform.hpp"
 
 class Camera {
 private:
 	glm::vec3 pos;
+	glm::vec3 eye;
+	glm::vec3 up;
 public:
+	Camera();
 
-	void lookPoint(GLint x, GLint y, GLint z);
+	void lookPoint(GLfloat x, GLfloat y, GLfloat z);
 	void lookPoint(glm::vec3 v);
 
-	void move(GLint x, GLint y, GLint z);
+	void move(GLfloat x, GLfloat y, GLfloat z);
 	void move(glm::vec3 v);
 
 	// Calculates and returns the view matrix

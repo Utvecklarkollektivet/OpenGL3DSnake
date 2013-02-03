@@ -83,20 +83,19 @@ void printProgramInfoLog(GLuint obj, const char *vfn, const char *ffn, const cha
 GLuint compileShaders(const char *vs, const char *fs, const char *gs, const char *vfn, const char *ffn, const char *gfn)
 {
 	GLuint v,f,g,p;
-	
 	v = glCreateShader(GL_VERTEX_SHADER);
 	f = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(v, 1, &vs, NULL);
 	glShaderSource(f, 1, &fs, NULL);
 	glCompileShader(v);
 	glCompileShader(f);
+
 	if (gs != NULL)
 	{
 		g = glCreateShader(GL_GEOMETRY_SHADER);
 		glShaderSource(g, 1, &gs, NULL);
 		glCompileShader(g);
 	}
-	
 	p = glCreateProgram();
 	glAttachShader(p,v);
 	glAttachShader(p,f);

@@ -6,20 +6,20 @@
 #include "../renderers/renderer.h"
 #include "SceneObject.h"
 
-//Forward declare renderer since we got a circulat dependency
+//Forward declare renderer since we got a circular dependency
 class Renderer;
 
 class Scene {
 private:
 	Renderer *renderer;
 
-	std::map<std::string, SceneObject*> mObjects;
+	std::map<int, SceneObject*> mObjects;
 public:
-	Scene(Renderer &renderer);
-	~Scene();
+	Scene(Renderer *renderer);
+	//~Scene();
 
-	void addObject(SceneObject &so);
-	const std::map<std::string, SceneObject*>& getObjects();
+	void addObject(SceneObject *so);
+	const std::map<int, SceneObject*>& getObjects();
 
 
 };
