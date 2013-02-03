@@ -33,9 +33,16 @@ void init() {
 
 void display() {
 	GLfloat t = (GLfloat)glutGet(GLUT_ELAPSED_TIME);
-	t = t/1000;
+	GLfloat b = t/1000;
 	//cout << "display!" << endl;
-	cube->setX( sin(t) );
+	cube->setX( sin(b) );
+	cube->setRotateX( t/70 );
+	cube->setRotateY( t/70 );
+	cube->setRotateZ( t/70 );
+
+	cube->setScaleX( max(cos(b), 0.1f) );
+	cube->setScaleY( max(sin(b), 0.1f) );
+	cube->setScaleZ( max(cos(b), 0.1f) );
 
 	renderer->render(scene, camera);
 }

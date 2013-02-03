@@ -37,12 +37,43 @@ void SceneObject::setPos(glm::vec3 p) {
 	this->pos = p;
 }
 
+void SceneObject::setRotateX(GLfloat r) {
+	this->rotX = r;
+}
+void SceneObject::setRotateY(GLfloat r) {
+	this->rotY = r;
+}
+void SceneObject::setRotateZ(GLfloat r) {
+	this->rotZ = r;
+}
+
+void SceneObject::setScale(glm::vec3 s) {
+	this->scaleX = s.x;
+	this->scaleY = s.y;
+	this->scaleZ = s.z;
+}
+void SceneObject::setScaleX(GLfloat s) {
+	this->scaleX = s;
+}
+void SceneObject::setScaleY(GLfloat s) {
+	this->scaleY = s;
+}
+void SceneObject::setScaleZ(GLfloat s) {
+	this->scaleZ = s;
+}
+
 
 
 glm::mat4 SceneObject::getModelWorldMatrix() {
 	glm::mat4 modelToWorld;
 	modelToWorld = glm::translate(modelToWorld, this->pos);
 	
+	modelToWorld = glm::rotate(modelToWorld, this->rotX, glm::vec3(1.0f, 0, 0));
+	modelToWorld = glm::rotate(modelToWorld, this->rotY, glm::vec3(0, 1.0f, 0));
+	modelToWorld = glm::rotate(modelToWorld, this->rotZ, glm::vec3(0, 0, 1.0f));
+
+	modelToWorld = glm::scale(modelToWorld, 
+		glm::vec3(this->scaleX, this->scaleY, this->scaleZ));
 
 	return modelToWorld;
 }

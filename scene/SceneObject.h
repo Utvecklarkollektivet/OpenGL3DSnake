@@ -43,6 +43,16 @@ public:
 
 	void setPos(glm::vec3 p);
 
+	void setRotateX(GLfloat r);
+	void setRotateY(GLfloat r);
+	void setRotateZ(GLfloat r);
+
+	void setScale(glm::vec3 s);
+	void setScaleX(GLfloat s);
+	void setScaleY(GLfloat s);
+	void setScaleZ(GLfloat s);
+
+
 	GLfloat getX();
 	GLfloat getY();
 	GLfloat getZ();
