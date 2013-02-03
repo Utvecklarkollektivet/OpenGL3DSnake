@@ -5,10 +5,14 @@ SceneObject::SceneObject() {
 	rotX = rotY = rotZ = 0;
 
 	pos = glm::vec3(0, 0, 0);
+
+	vertices.num = 0;
+	normals.num = 0;
+	indices.num = 0;
 }
 
-SceneObject::SceneObject(std::vector<GLfloat> vertices, 
-		std::vector<GLfloat> normals, std::vector<GLfloat> indices) {
+SceneObject::SceneObject(GLfloatCollection vertices, 
+		GLfloatCollection normals, GLfloatCollection indices) {
 	this->vertices = vertices;
 	this->normals = normals;
 	this->indices = indices;

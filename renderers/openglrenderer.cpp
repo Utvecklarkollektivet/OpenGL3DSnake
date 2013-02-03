@@ -36,10 +36,10 @@ OpenGLRenderer::~OpenGLRenderer() {
 
 }
 
-int OpenGLRenderer::addMesh(GLfloat vertices[], GLfloat normals[], GLfloat indices[]) {
+int OpenGLRenderer::addMesh(GLfloatCollection *vertices, GLfloatCollection *normals, GLfloatCollection *indices) {
 	meshData *d = new meshData();
 
-	std::cout << "hejsan hoppsan: " << vertices[2] <<  std::endl;
+	//std::cout << "hejsan hoppsan: " << vertices[2] <<  std::endl;
 
 	// Generate buffers
 	glGenVertexArrays(1, &d->vertexArrayObjID);
@@ -54,20 +54,37 @@ int OpenGLRenderer::addMesh(GLfloat vertices[], GLfloat normals[], GLfloat indic
     // VBO for vertex data
     glBindBuffer(GL_ARRAY_BUFFER, d->vertexBufferObjID);
     //glBufferData(GL_ARRAY_BUFFER, s->m->numVertices*3*sizeof(GLfloat), s->m->vertexArray, GL_STATIC_DRAW);
-	glBufferData(GL_ARRAY_BUFFER, 36*3*sizeof(GLfloat), vertices, GL_STATIC_DRAW);
+	//glBufferData(GL_ARRAY_BUFFER, 36*3*sizeof(GLfloat), vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, vertices->num*sizeof(GLfloat), &vertices->data[0], GL_STATIC_DRAW);
 	glVertexAttribPointer(glGetAttribLocation(program, "in_Position"), 3, GL_FLOAT, GL_FALSE, 0, 0); 
 	glEnableVertexAttribArray(glGetAttribLocation(program, "in_Position"));
-	/*
-	// VBO for vertex normal data
-    glBindBuffer(GL_ARRAY_BUFFER, d->normalBufferObjID);
-    glBufferData(GL_ARRAY_BUFFER, 6*3*sizeof(GLfloat), normals, GL_STATIC_DRAW);
-	glVertexAttribPointer(glGetAttribLocation(program, "in_Normal"), 3, GL_FLOAT, GL_FALSE, 0, 0);
-	glEnableVertexAttribArray(glGetAttribLocation(program, "in_Normal"));
 
-	// Index data
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, d->indexBufferObjID);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6*sizeof(GLfloat), indices, GL_STATIC_DRAW);
-	*/
+	d->numVertices = vertices->num;
+	
+	if ( normals->num != 0) {
+		// VBO for vertex normal data
+	    glBindBuffer(GL_ARRAY_BUFFER, d->normalBufferObjID);
+	    glBufferData(GL_ARRAY_BUFFER, normals->num*sizeof(GLfloat), &normals->data[0], GL_STATIC_DRAW);
+		glVertexAttribPointer(glGetAttribLocation(program, "in_Normal"), 3, GL_FLOAT, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(glGetAttribLocation(program, "in_Normal"));
+
+		d->numNormals = normals->num;
+
+	}
+
+	if (indices->num != 0) {
+		// Index data
+	    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, d->indexBufferObjID);
+	    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices->num*sizeof(GLfloat), &indices->data[0], GL_STATIC_DRAW);
+		
+		d->numIndices = indices->num;
+
+		// When rendering, use indices!
+		d->useIndices = 1;
+	} else {
+		// When rendering, don't use indices!
+		d->useIndices = 0;
+	}
     GLint id = rand() % 10000 + 1;
     d->id = id;
 
@@ -77,7 +94,8 @@ int OpenGLRenderer::addMesh(GLfloat vertices[], GLfloat normals[], GLfloat indic
 }
 
 int OpenGLRenderer::addMesh(SceneObject* so) {
-	return this->addMesh(&so->vertices[0], &so->normals[0], &so->indices[0]);
+	//return this->addMesh(&so->vertices[0], &so->normals[0], &so->indices[0]);
+	return this->addMesh(&so->vertices, &so->normals, &so->indices);
 }
 /**
  * Render the scene by calculating modelToWorld matrix for each model and worldToView matrix
@@ -109,8 +127,13 @@ void OpenGLRenderer::render(Scene *scene, Camera *camera) {
 			// Bind it!
 			glBindVertexArray(d->vertexArrayObjID);    // Select VAO
 										// 6 is the number of indices
+			if (d->useIndices) {
+				glDrawElements(GL_TRIANGLES, d->numIndices, GL_UNSIGNED_INT, 0L);
+			} else {
+				glDrawArrays(GL_TRIANGLES, 0, d->numVertices);
+			}
 		    //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0L);
-		    glDrawArrays(GL_TRIANGLES, 0, 36*3);
+		    
 		} else {
 			std::cout << "THIS IS BAD!" << std::endl;
 		}

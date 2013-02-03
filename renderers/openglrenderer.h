@@ -20,10 +20,15 @@ private:
 
 	struct meshData {
 		unsigned int id;
+		unsigned int useIndices;
 		unsigned int vertexArrayObjID;
 		unsigned int vertexBufferObjID;
 		unsigned int indexBufferObjID;
 		unsigned int normalBufferObjID;
+
+		unsigned int numVertices;
+		unsigned int numIndices;
+		unsigned int numNormals;
 	};
 
 	std::map<int, meshData*> meshes;
@@ -31,7 +36,7 @@ public:
 	OpenGLRenderer();
 	~OpenGLRenderer();
 
-	int addMesh(GLfloat vertices[], GLfloat normals[], GLfloat indices[]);
+	int addMesh(GLfloatCollection *vertices, GLfloatCollection *normals, GLfloatCollection *indices);
 	int addMesh(SceneObject* so);
 	void drawMesh(GLint index);
 

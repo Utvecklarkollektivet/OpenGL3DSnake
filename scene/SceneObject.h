@@ -6,6 +6,7 @@
 #include <GL/gl.h>
 #include "../lib/glm/glm/glm.hpp"
 #include "../lib/glm/glm/gtc/matrix_transform.hpp"
+#include "../renderers/glfloatcollection.h"
 
 class SceneObject {
 protected:
@@ -21,9 +22,14 @@ protected:
 
 	glm::vec3 pos;
 public:
+	GLfloatCollection vertices;
+	GLfloatCollection normals;
+	GLfloatCollection indices;
+	/*
 	std::vector<GLfloat> vertices;
 	std::vector<GLfloat> normals;
 	std::vector<GLfloat> indices;
+	*/
 	/*
 	GLfloat vertices[];
 	GLfloat normals[];
@@ -31,8 +37,8 @@ public:
 	GLfloat indices[];
 	*/
 	SceneObject();
-	SceneObject(std::vector<GLfloat> vertices, 
-		std::vector<GLfloat> normals, std::vector<GLfloat> indices);
+	SceneObject(GLfloatCollection vertices, 
+		GLfloatCollection normals, GLfloatCollection indices);
 
 	void move(GLfloat x, GLfloat y, GLfloat z);
 	void move(glm::vec3 v);
