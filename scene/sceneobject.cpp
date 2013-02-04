@@ -76,6 +76,20 @@ void SceneObject::setScaleZ(GLfloat s) {
 }
 
 
+GLfloat SceneObject::getX() {
+	return this->pos.x;
+}
+GLfloat SceneObject::getY() {
+	return this->pos.y;
+}
+GLfloat SceneObject::getZ() {
+	return this->pos.z;
+}
+glm::vec3 SceneObject::getPos() {
+	return this->pos;
+}
+
+
 
 glm::mat4 SceneObject::getModelWorldMatrix() {
 	glm::mat4 modelToWorld;

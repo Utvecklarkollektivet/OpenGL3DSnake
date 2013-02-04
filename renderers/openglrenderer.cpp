@@ -42,7 +42,7 @@ OpenGLRenderer::~OpenGLRenderer() {
 int OpenGLRenderer::addMesh(GLfloatCollection *vertices, GLfloatCollection *normals, GLfloatCollection *indices) {
 	meshData *d = new meshData();
 
-	//std::cout << "hejsan hoppsan: " << vertices[2] <<  std::endl;
+	//std::cout << "hejsan hoppsan: " << vertices->data[2] <<  std::endl;
 
 	// Generate buffers
 	glGenVertexArrays(1, &d->vertexArrayObjID);
@@ -53,16 +53,17 @@ int OpenGLRenderer::addMesh(GLfloatCollection *vertices, GLfloatCollection *norm
 	// Bind buffers to this VAO
 	glBindVertexArray(d->vertexArrayObjID);
 
+	if ( vertices->num != 0) {
+	    // VBO for vertex data
+	    glBindBuffer(GL_ARRAY_BUFFER, d->vertexBufferObjID);
+	    //glBufferData(GL_ARRAY_BUFFER, s->m->numVertices*3*sizeof(GLfloat), s->m->vertexArray, GL_STATIC_DRAW);
+		//glBufferData(GL_ARRAY_BUFFER, 36*3*sizeof(GLfloat), vertices, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, vertices->num*sizeof(GLfloat), &vertices->data[0], GL_STATIC_DRAW);
+		glVertexAttribPointer(glGetAttribLocation(program, "in_Position"), 3, GL_FLOAT, GL_FALSE, 0, 0); 
+		glEnableVertexAttribArray(glGetAttribLocation(program, "in_Position"));
 
-    // VBO for vertex data
-    glBindBuffer(GL_ARRAY_BUFFER, d->vertexBufferObjID);
-    //glBufferData(GL_ARRAY_BUFFER, s->m->numVertices*3*sizeof(GLfloat), s->m->vertexArray, GL_STATIC_DRAW);
-	//glBufferData(GL_ARRAY_BUFFER, 36*3*sizeof(GLfloat), vertices, GL_STATIC_DRAW);
-	glBufferData(GL_ARRAY_BUFFER, vertices->num*sizeof(GLfloat), &vertices->data[0], GL_STATIC_DRAW);
-	glVertexAttribPointer(glGetAttribLocation(program, "in_Position"), 3, GL_FLOAT, GL_FALSE, 0, 0); 
-	glEnableVertexAttribArray(glGetAttribLocation(program, "in_Position"));
-
-	d->numVertices = vertices->num;
+		d->numVertices = vertices->num;
+	}
 	
 	if ( normals->num != 0) {
 		// VBO for vertex normal data
@@ -133,7 +134,8 @@ void OpenGLRenderer::render(Scene *scene, Camera *camera) {
 			if (d->useIndices) {
 				glDrawElements(GL_TRIANGLES, d->numIndices, GL_UNSIGNED_INT, 0L);
 			} else {
-				glDrawArrays(GL_TRIANGLES, 0, d->numVertices);
+				//GL_TRIANGLES
+				glDrawArrays(GL_LINES, 0, d->numVertices);
 			}
 		    //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0L);
 		    
@@ -148,7 +150,7 @@ void OpenGLRenderer::render(Scene *scene, Camera *camera) {
 }
 
 void OpenGLRenderer::onResizeScreen() {
-	std::cout << "width: " << glutGet(GLUT_WINDOW_WIDTH) << " height: " << glutGet(GLUT_WINDOW_HEIGHT) << std::endl;
+	//std::cout << "width: " << glutGet(GLUT_WINDOW_WIDTH) << " height: " << glutGet(GLUT_WINDOW_HEIGHT) << std::endl;
 	GLint width = glutGet(GLUT_WINDOW_WIDTH);
 	GLint height = glutGet(GLUT_WINDOW_HEIGHT);
 	
