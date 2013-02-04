@@ -26,6 +26,8 @@ public:
 	void setPos(GLfloat x, GLfloat y, GLfloat z);
 	void setPos(glm::vec3 v);
 
+	void setUp(glm::vec3 u);
+
 	// Calculates and returns the view matrix
 	// used by the renderer for placing the camera
 	glm::mat4 getModelViewMatrix();

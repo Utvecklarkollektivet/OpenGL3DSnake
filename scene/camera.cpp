@@ -36,6 +36,9 @@ void Camera::setPos(GLfloat x, GLfloat y, GLfloat z) {
 void Camera::setPos(glm::vec3 v) {
 	this->eye = v;
 }
+void Camera::setUp(glm::vec3 u) {
+	this->up = u;
+}
 
 glm::mat4 Camera::getModelViewMatrix() {
 	return glm::lookAt(this->eye, this->center, this->up);

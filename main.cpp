@@ -22,7 +22,7 @@ using namespace std;
 
 const GLint BOARD_WIDTH = 10;
 const GLint BOARD_HEIGHT = 10;
-const GLfloat UPDATE_RATE = 200; // ms
+const GLfloat UPDATE_RATE = 100; // ms
 
 GLfloat lastUpdate = 0;
 glm::vec3 snakeForward;
@@ -172,8 +172,13 @@ void init() {
 	renderer = new OpenGLRenderer();
 	scene = new Scene(renderer);
 	camera = new Camera();
+	/*
 	camera->move(10.0f, 10.0f, 60.0f);
-
+	camera->lookPoint(glm::vec3(10.0f, 0, 10.0f));
+	*/
+	camera->move(10.0f, 60.0f, -10.0f);
+	camera->lookPoint(10.0f, 0, 0);
+	camera->setUp(glm::vec3(0, 0, -1.0f));
 	// Start the game!
 	start();
 
@@ -258,6 +263,8 @@ void onKeyPressed(unsigned char k, int x, int y) {
 		snakeForward = glm::vec3(-2.0f, 0.0f, 0.0f);
 	} else if (k == 'd' && snakeForward.x != -2.0f) {
 		snakeForward = glm::vec3(2.0f, 0.0f, 0.0f);
+	} else if (k == 'r') {
+		start();
 	}
 }
 int main(int argc, char *argv[])
