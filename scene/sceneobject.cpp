@@ -9,6 +9,15 @@ SceneObject::SceneObject() {
 	vertices.num = 0;
 	normals.num = 0;
 	indices.num = 0;
+
+
+	scaleX = 1.0f;
+	scaleY = 1.0f;
+	scaleZ = 1.0f;
+
+	rotX = 0.0f;
+	rotY = 0.0f;
+	rotZ = 0.0f;
 }
 
 SceneObject::SceneObject(GLfloatCollection vertices, 

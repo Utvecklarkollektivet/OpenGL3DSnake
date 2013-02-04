@@ -26,7 +26,7 @@ void init() {
 	renderer = new OpenGLRenderer();
 	scene = new Scene(renderer);
 	camera = new Camera();
-	camera->move(0, 0, 3);
+	camera->move(0, 5.0f, 3.0f);
 	cube = new Cube();
 	scene->addObject(cube);
 }
@@ -35,7 +35,7 @@ void display() {
 	GLfloat t = (GLfloat)glutGet(GLUT_ELAPSED_TIME);
 	GLfloat b = t/1000;
 	//cout << "display!" << endl;
-	cube->setX( sin(b) );
+	/*cube->setX( sin(b) );
 	cube->setRotateX( t/70 );
 	cube->setRotateY( t/70 );
 	cube->setRotateZ( t/70 );
@@ -43,6 +43,8 @@ void display() {
 	cube->setScaleX( max(cos(b), 0.1f) );
 	cube->setScaleY( max(sin(b), 0.1f) );
 	cube->setScaleZ( max(cos(b), 0.1f) );
+	*/
+	camera->setPos( sin(b) * 5, 0, cos(b) * 5);
 
 	renderer->render(scene, camera);
 }

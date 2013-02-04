@@ -129,7 +129,6 @@ void OpenGLRenderer::render(Scene *scene, Camera *camera) {
 
 			// Bind it!
 			glBindVertexArray(d->vertexArrayObjID);    // Select VAO
-										// 6 is the number of indices
 			if (d->useIndices) {
 				glDrawElements(GL_TRIANGLES, d->numIndices, GL_UNSIGNED_INT, 0L);
 			} else {
