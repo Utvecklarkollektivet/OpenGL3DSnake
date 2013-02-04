@@ -31,11 +31,19 @@ void init() {
 	scene->addObject(cube);
 }
 
+void cleanup() {
+	delete renderer;
+	delete scene;
+	delete camera;
+	delete cube;
+}
+
 void display() {
 	GLfloat t = (GLfloat)glutGet(GLUT_ELAPSED_TIME);
 	GLfloat b = t/1000;
 	//cout << "display!" << endl;
-	/*cube->setX( sin(b) );
+	/*
+	cube->setX( sin(b) );
 	cube->setRotateX( t/70 );
 	cube->setRotateY( t/70 );
 	cube->setRotateZ( t/70 );
@@ -43,10 +51,16 @@ void display() {
 	cube->setScaleX( max(cos(b), 0.1f) );
 	cube->setScaleY( max(sin(b), 0.1f) );
 	cube->setScaleZ( max(cos(b), 0.1f) );
-	*/
+	
 	camera->setPos( sin(b) * 5, 0, cos(b) * 5);
-
+	*/
 	renderer->render(scene, camera);
+}
+
+void reshape(GLint newWidth, GLint newHeight) {
+	std::cout << "!!! width: " << newWidth << " height: " << newHeight << std::endl;
+	renderer->onResizeScreen();
+	glutPostRedisplay();
 }
 
 void OnTimer(int value)
@@ -64,6 +78,7 @@ int main(int argc, char *argv[])
 	glutCreateWindow ("3Dgame");
 	init ();
 	glutDisplayFunc(display); 
+	glutReshapeFunc(reshape);
 	//glutSetCursor(GLUT_CURSOR_NONE); 
 	//glutKeyboardFunc(onKeyPressed); 
 	//glutKeyboardUpFunc(onKeyUp); 
@@ -71,5 +86,6 @@ int main(int argc, char *argv[])
 	//glutPassiveMotionFunc(onMouseMove);
 	
 	glutTimerFunc(20, &OnTimer, 0);
+	atexit(cleanup);
 	glutMainLoop();
 }

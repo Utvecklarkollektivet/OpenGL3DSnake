@@ -107,6 +107,7 @@ int OpenGLRenderer::addMesh(SceneObject* so) {
  */
 void OpenGLRenderer::render(Scene *scene, Camera *camera) {
 
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 
@@ -147,7 +148,14 @@ void OpenGLRenderer::render(Scene *scene, Camera *camera) {
 }
 
 void OpenGLRenderer::onResizeScreen() {
-	glm::mat4 projMatrix = glm::perspective(45.0f, (GLfloat)glutGet(GLUT_WINDOW_WIDTH) / glutGet(GLUT_WINDOW_HEIGHT), 0.1f, 100.f);
+	std::cout << "width: " << glutGet(GLUT_WINDOW_WIDTH) << " height: " << glutGet(GLUT_WINDOW_HEIGHT) << std::endl;
+	GLint width = glutGet(GLUT_WINDOW_WIDTH);
+	GLint height = glutGet(GLUT_WINDOW_HEIGHT);
+	
+	GLfloat aspect = (GLfloat)width/height;
 
+	glm::mat4 projMatrix = glm::perspective(45.0f, aspect, 0.1f, 100.f);
+
+	glViewport(0, 0, width, height); // Set the viewport size to fill the window 
 	glUniformMatrix4fv(glGetUniformLocation(program, "projMatrix"), 1, GL_FALSE, glm::value_ptr(projMatrix));
 }
