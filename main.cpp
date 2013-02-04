@@ -52,18 +52,29 @@ bool isOnCandy() {
 	return (headX == candyX && headZ == candyZ);
 }
 // outside the boundaries?
-bool isOutsideBoundaries() {
-
+bool isOutsideBoundaries(glm::vec3 p) {
+	if ( p.x <= 0 || p.x >= BOARD_WIDTH*2 || 
+		p.z <= 0 || p.z >= BOARD_HEIGHT*2) {
+		return true;
+	} else {
+		return false;
+	}
 }
 
 // colliding with the tail?
-bool isOnTail() {
-
+bool isOnTail(glm::vec3 p) {
+	for (auto it = tail.begin(); it != tail.end(); ++it) {
+		if (p.x == (*it)->getX() && 
+			p.z == (*it)->getZ()) {
+			return true;
+		}
+	}
+	return false;
 }
 
 void placeCandy() {
-	GLint rndX = rand() % BOARD_WIDTH;
-	GLint rndZ = rand() % BOARD_HEIGHT;
+	GLint rndX = rand() % (BOARD_WIDTH-1);
+	GLint rndZ = rand() % (BOARD_HEIGHT-1);
 	rndX *= 2;
 	rndZ *= 2;
 
@@ -97,11 +108,11 @@ void moveTail() {
 		GLint prev = i-1;
 		//Cube *frontTail = tail[i-1];
 		if ( prev >= 0) {
-			cout << "A" << prev <<endl;
+			//cout << "A" << prev <<endl;
 			tail[i]->setX( tail[prev]->getX());
 			tail[i]->setZ( tail[prev]->getZ());
 		} else {
-			cout << "B" << endl;
+			//cout << "B" << endl;
 			tail[i]->setX(cube->getX());
 			tail[i]->setZ(cube->getZ());
 		}
@@ -119,6 +130,40 @@ void moveTail() {
 	*/
 }
 
+void start() {
+	// Snake head placement
+	if (cube == 0) {
+		cube = new Cube();
+		scene->addObject(cube);
+	}
+	cube->setScale(glm::vec3(2.0f, 2.0f, 2.0f));
+	cube->setX(2);
+	cube->setY(2);
+	cube->setZ(BOARD_HEIGHT*2-2);
+	
+
+	// Candy placement
+	if (candy == 0) {
+		candy = new Cube();
+		scene->addObject(candy);
+	}
+	candy->setScale(glm::vec3(2.0f, 2.0f, 2.0f));
+	candy->setY(2);
+	placeCandy();
+
+	// If the snake got a tail, delete it!
+	if (tail.size() > 0) {
+		for (auto it = tail.begin(); it != tail.end(); ++it) {
+			// Delete it from the scene
+			scene->removeObject(*it);
+			// Free allocated memory
+			delete *it;
+		}
+		// Clear the list
+		tail.clear();
+	}
+}
+
 void init() {
 
 	srand(time(NULL));
@@ -128,18 +173,10 @@ void init() {
 	scene = new Scene(renderer);
 	camera = new Camera();
 	camera->move(10.0f, 10.0f, 60.0f);
-	cube = new Cube();
-	cube->setScale(glm::vec3(2.0f, 2.0f, 2.0f));
-	cube->setY(2);
-	cube->setZ(19*2);
-	scene->addObject(cube);
 
-	// Candy placement
-	candy = new Cube();
-	scene->addObject(candy);
-	candy->setScale(glm::vec3(2.0f, 2.0f, 2.0f));
-	candy->setY(2);
-	placeCandy();
+	// Start the game!
+	start();
+
 
 	// The board
 	/*
@@ -173,6 +210,15 @@ void display() {
 
 			// Check collisions on snake itself and boundaries
 		// ...
+		/*if (isOutsideBoundaries( cube->getPos() + snakeForward)) {
+			// Collided border
+			cout << "Outside of boundries" << endl;
+			start();
+		}
+		*/
+		if (isOnTail(cube->getPos() + snakeForward)) {
+			cout << "Collided with tail" << endl;
+		}
 		if (isOnCandy()) {
 			//cout << "Candycollision" << endl;
 			addTail();
@@ -181,28 +227,10 @@ void display() {
 
 		moveTail();
 		cube->move(snakeForward);
-		cout << "Snake pos " << cube->getX() << "<->" << cube->getZ() << endl;
-		/*
-		// Set all the tail the front tail position
-		for (auto it = tail.end(); it != tail.begin(); --it) {
-
-		}*/
+		//cout << "Snake pos " << cube->getX() << "<->" << cube->getZ() << endl;
 
 		lastUpdate = t;
 	}
-	//cout << "display!" << endl;
-	/*
-	cube->setX( sin(b) );
-	cube->setRotateX( t/70 );
-	cube->setRotateY( t/70 );
-	cube->setRotateZ( t/70 );
-
-	cube->setScaleX( max(cos(b), 0.1f) );
-	cube->setScaleY( max(sin(b), 0.1f) );
-	cube->setScaleZ( max(cos(b), 0.1f) );
-	
-	camera->setPos( sin(b) * 5, 0, cos(b) * 5);
-	*/
 	renderer->render(scene, camera);
 }
 
@@ -222,13 +250,13 @@ void OnTimer(int value)
 }
 
 void onKeyPressed(unsigned char k, int x, int y) {
-	if (k == 'w') {
+	if (k == 'w' && snakeForward.z != 2.0f) {
 		snakeForward = glm::vec3(0.0f, 0.0f, -2.0f);
-	} else if (k == 's') {
+	} else if (k == 's' && snakeForward.z != -2.0f) {
 		snakeForward = glm::vec3(0.0f, 0.0f, 2.0f);
-	} else if (k == 'a') {
+	} else if (k == 'a'  && snakeForward.x != 2.0f) {
 		snakeForward = glm::vec3(-2.0f, 0.0f, 0.0f);
-	} else if (k == 'd') {
+	} else if (k == 'd' && snakeForward.x != -2.0f) {
 		snakeForward = glm::vec3(2.0f, 0.0f, 0.0f);
 	}
 }

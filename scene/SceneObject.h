@@ -22,6 +22,8 @@ protected:
 
 	glm::vec3 pos;
 public:
+	GLint id;
+
 	GLfloatCollection vertices;
 	GLfloatCollection normals;
 	GLfloatCollection indices;

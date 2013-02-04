@@ -19,6 +19,7 @@ public:
 	//~Scene();
 
 	void addObject(SceneObject *so);
+	void removeObject(SceneObject *so);
 	const std::map<int, SceneObject*>& getObjects();
 
 
