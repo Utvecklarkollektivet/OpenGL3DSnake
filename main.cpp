@@ -8,6 +8,7 @@
 #include <GL/glu.h>
 #include <math.h>
 #include "lib/glm/glm/glm.hpp"
+#include "lib/glm/glm/gtc/matrix_access.hpp"
 #include "renderers/renderer.h"
 #include "scene/Scene.h"
 #include "scene/objects/cube.h"
@@ -172,13 +173,21 @@ void init() {
 	renderer = new OpenGLRenderer();
 	scene = new Scene(renderer);
 	camera = new Camera();
-	/*
+	
+	// Camera right forward
 	camera->move(10.0f, 10.0f, 60.0f);
 	camera->lookPoint(glm::vec3(10.0f, 0, 10.0f));
-	*/
+
+	// Camera looking left
+	//camera->move(10.0f, 10.0f, 60.0f);
+	//camera->lookPoint(glm::vec3(-10.0f, 0, 1.0f));
+	
+	/*
+	//	Camera above
 	camera->move(10.0f, 60.0f, -10.0f);
 	camera->lookPoint(10.0f, 0, 0);
 	camera->setUp(glm::vec3(0, 0, -1.0f));
+	*/
 	// Start the game!
 	start();
 
@@ -211,7 +220,14 @@ void display() {
 	
 
 
+
+
 	if (diff >= UPDATE_RATE) {
+
+		// temp
+		camera->setPos( cube->getPos() - snakeForward*glm::vec3(4));
+		camera->setY(5);
+		camera->lookPoint(cube->getPos() );
 
 			// Check collisions on snake itself and boundaries
 		// ...
@@ -255,14 +271,19 @@ void OnTimer(int value)
 }
 
 void onKeyPressed(unsigned char k, int x, int y) {
+	glm::mat4 view = camera->getModelViewMatrix();
+	glm::vec3 rightVector = glm::vec3(view[0][0], view[1][0], view[2][0]);
+
 	if (k == 'w' && snakeForward.z != 2.0f) {
 		snakeForward = glm::vec3(0.0f, 0.0f, -2.0f);
 	} else if (k == 's' && snakeForward.z != -2.0f) {
 		snakeForward = glm::vec3(0.0f, 0.0f, 2.0f);
 	} else if (k == 'a'  && snakeForward.x != 2.0f) {
-		snakeForward = glm::vec3(-2.0f, 0.0f, 0.0f);
+		//snakeForward = glm::vec3(-2.0f, 0.0f, 0.0f);
+		snakeForward = glm::vec3(-1.0f, -1.0f, -1.0f) * rightVector;
 	} else if (k == 'd' && snakeForward.x != -2.0f) {
-		snakeForward = glm::vec3(2.0f, 0.0f, 0.0f);
+		//snakeForward = glm::vec3(2.0f, 0.0f, 0.0f);
+		snakeForward = rightVector;
 	} else if (k == 'r') {
 		start();
 	}

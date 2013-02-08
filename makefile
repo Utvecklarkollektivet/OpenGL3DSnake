@@ -2,7 +2,7 @@
 #g++ -Wall -std=c99 -o main -lm -lX11 -lGL -lGLU -lglut -DGL_GLEXT_PROTOTYPES main.cpp
 
 BUILD_PATH = build/
-OBJS = main.cpp renderers/renderer.cpp renderers/openglrenderer.cpp scene/camera.cpp scene/scene.cpp scene/sceneobject.cpp scene/objects/cube.cpp lib/GL_utilities.c
+OBJS = main.cpp renderers/renderer.cpp renderers/openglrenderer.cpp scene/camera.cpp scene/scene.cpp scene/sceneobject.cpp scene/objects/cube.cpp lib/GL_utilities.c lib/loadobj.c lib/LoadTGA.c
 OBJ_NAME = 3dgame
 
 all : $(OBJS)

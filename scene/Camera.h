@@ -30,6 +30,7 @@ public:
 
 	// Calculates and returns the view matrix
 	// used by the renderer for placing the camera
+	// Should be called getViewMatrix...
 	glm::mat4 getModelViewMatrix();
 
 };

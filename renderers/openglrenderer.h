@@ -9,7 +9,10 @@
 #include "../lib/glm/glm/glm.hpp"
 #include "../glm/gtc/matrix_transform.hpp"
 #include "../lib/glm/glm/gtc/type_ptr.hpp"
+#include "../lib/glm/glm/gtc/matrix_access.hpp"
 #include "../lib/GL_utilities.h"
+#include "../lib/loadobj.h"
+#include "../lib/LoadTGA.h"
 
 #include "renderer.h"
 
@@ -25,6 +28,7 @@ private:
 		unsigned int vertexBufferObjID;
 		unsigned int indexBufferObjID;
 		unsigned int normalBufferObjID;
+		unsigned int texCoordBufferObjID;
 
 		unsigned int numVertices;
 		unsigned int numIndices;
@@ -32,6 +36,9 @@ private:
 	};
 
 	std::map<int, meshData*> meshes;
+
+	meshData skyBoxMesh;
+	GLuint skyBoxTexture;
 public:
 	OpenGLRenderer();
 	~OpenGLRenderer();

@@ -26,10 +26,49 @@ OpenGLRenderer::OpenGLRenderer() {
 	program = loadShaders("shaders/main.vert", "shaders/main.frag");
 
 	// Perspective matrix
-	glm::mat4 projMatrix = glm::perspective(45.0f, (GLfloat)glutGet(GLUT_WINDOW_WIDTH) / glutGet(GLUT_WINDOW_HEIGHT), 0.1f, 100.f);
+	glm::mat4 projMatrix = glm::perspective(90.0f, (GLfloat)glutGet(GLUT_WINDOW_WIDTH) / glutGet(GLUT_WINDOW_HEIGHT), 0.1f, 100.f);
 
 	glUniformMatrix4fv(glGetUniformLocation(program, "projMatrix"), 1, GL_FALSE, glm::value_ptr(projMatrix));
 	// Note: This should be recalculated when the screen is being resized.
+
+
+	// This is temporary, should be moved
+
+	Model* skybox = LoadModel("resources/skybox.obj");
+	LoadTGATextureSimple("resources/SkyBox512.tga", &this->skyBoxTexture);
+	glBindTexture(GL_TEXTURE_2D, skyBoxTexture);
+	
+
+	glGenVertexArrays(1, &skyBoxMesh.vertexArrayObjID);
+	glGenBuffers(1, &skyBoxMesh.vertexBufferObjID);
+	glGenBuffers(1, &skyBoxMesh.indexBufferObjID);
+	glGenBuffers(1, &skyBoxMesh.normalBufferObjID);
+	glGenBuffers(1, &skyBoxMesh.texCoordBufferObjID);
+	
+
+	// Bind buffers to this VAO
+	glBindVertexArray(skyBoxMesh.vertexArrayObjID);
+
+	glBindBuffer(GL_ARRAY_BUFFER, skyBoxMesh.vertexBufferObjID);
+	glBufferData(GL_ARRAY_BUFFER, skybox->numVertices*3*sizeof(GLfloat), skybox->vertexArray, GL_STATIC_DRAW);
+	glVertexAttribPointer(glGetAttribLocation(program, "in_Position"), 3, GL_FLOAT, GL_FALSE, 0, 0); 
+	glEnableVertexAttribArray(glGetAttribLocation(program, "in_Position"));
+
+	glBindBuffer(GL_ARRAY_BUFFER, skyBoxMesh.normalBufferObjID);
+	glBufferData(GL_ARRAY_BUFFER, skybox->numVertices*3*sizeof(GLfloat), skybox->normalArray, GL_STATIC_DRAW);
+	glVertexAttribPointer(glGetAttribLocation(program, "in_Normal"), 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(glGetAttribLocation(program, "in_Normal"));
+	
+	glBindBuffer(GL_ARRAY_BUFFER, skyBoxMesh.texCoordBufferObjID);
+	glBufferData(GL_ARRAY_BUFFER, skybox->numVertices*2*sizeof(GLfloat), skybox->texCoordArray, GL_STATIC_DRAW);
+	glVertexAttribPointer(glGetAttribLocation(program, "in_TexCoord"), 2, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(glGetAttribLocation(program, "in_TexCoord"));
+	
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, skyBoxMesh.indexBufferObjID);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, skybox->numIndices*sizeof(GLfloat), skybox->indexArray, GL_STATIC_DRAW);
+
+	skyBoxMesh.numIndices = skybox->numIndices;
+
 }
 
 OpenGLRenderer::~OpenGLRenderer() {
@@ -65,7 +104,7 @@ int OpenGLRenderer::addMesh(GLfloatCollection *vertices, GLfloatCollection *norm
 		d->numVertices = vertices->num;
 	}
 	
-	if ( normals->num != 0) {
+	if ( normals != NULL && normals->num != 0) {
 		// VBO for vertex normal data
 	    glBindBuffer(GL_ARRAY_BUFFER, d->normalBufferObjID);
 	    glBufferData(GL_ARRAY_BUFFER, normals->num*sizeof(GLfloat), &normals->data[0], GL_STATIC_DRAW);
@@ -76,7 +115,7 @@ int OpenGLRenderer::addMesh(GLfloatCollection *vertices, GLfloatCollection *norm
 
 	}
 
-	if (indices->num != 0) {
+	if (indices != NULL && indices->num != 0) {
 		// Index data
 	    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, d->indexBufferObjID);
 	    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices->num*sizeof(GLfloat), &indices->data[0], GL_STATIC_DRAW);
@@ -110,6 +149,28 @@ void OpenGLRenderer::render(Scene *scene, Camera *camera) {
 
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// Draw skybox
+	glm::mat4 skyboxView = camera->getModelViewMatrix();
+	/*
+	skyboxView[0][3] = 0;
+	skyboxView[1][3] = 0;
+	skyboxView[2][3] = 0;
+	*/
+	// Viewmatrix is transposed
+	skyboxView[3][0] = 0;
+	skyboxView[3][1] = 0;
+	skyboxView[3][2] = 0;
+	
+
+	glDisable(GL_DEPTH_TEST);
+
+	glUniform1i(glGetUniformLocation(program, "texUnit"), 0); // Texture unit 0
+	glBindVertexArray(this->skyBoxMesh.vertexArrayObjID);
+	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_FALSE, glm::value_ptr(skyboxView));
+	glDrawElements(GL_TRIANGLES, this->skyBoxMesh.numIndices, GL_UNSIGNED_INT, 0L);
+
+	glEnable(GL_DEPTH_TEST);
 	
 
 	// Get the modelToView matrix
@@ -156,7 +217,7 @@ void OpenGLRenderer::onResizeScreen() {
 	
 	GLfloat aspect = (GLfloat)width/height;
 
-	glm::mat4 projMatrix = glm::perspective(45.0f, aspect, 0.1f, 100.f);
+	glm::mat4 projMatrix = glm::perspective(90.0f, aspect, 0.1f, 100.f);
 
 	glViewport(0, 0, width, height); // Set the viewport size to fill the window 
 	glUniformMatrix4fv(glGetUniformLocation(program, "projMatrix"), 1, GL_FALSE, glm::value_ptr(projMatrix));
